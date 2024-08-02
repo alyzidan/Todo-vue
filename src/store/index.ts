@@ -14,7 +14,22 @@ import { Getters, getters } from "./getters";
 // initial state Object
 export const state: State = {
   loading: false,
-  items: [{ id: 122, text: "asdasdasd", subtitle: "asdasd", completed: false }],
+  items: [
+    {
+      id: 122,
+      text: "asdasdasd",
+      subtitle: "asdasd asdasd asdasd asdasd",
+      completed: false,
+    },
+    {
+      id: 122,
+      text: "asdasdasd",
+      subtitle: "asdasd asdasd asdasd asdasd",
+      completed: false,
+    },
+    { id: 122, text: "asdasdasd", subtitle: "asdasd", completed: true },
+    { id: 122, text: "asdasdasd", subtitle: "asdasd", completed: false },
+  ],
 };
 
 export function useStore() {
