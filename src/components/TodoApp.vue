@@ -10,6 +10,10 @@
         <TodoForm></TodoForm>
 
         <TodoItem v-for="item in items" :key="item" v-bind="item"></TodoItem>
+        <div v-if="items.length < 1">
+          <p>you don't have any todos yet</p>
+          <p>start add by filling the form above</p>
+        </div>
       </div>
     </div>
   </div>

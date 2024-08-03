@@ -1,93 +1,77 @@
 <template>
-  <div>
-    <form ref="createTaskForm" action="">
-      <!-- <label
-        v-if="!editMode"
-        for="email1"
-        class="block text-900 font-medium mb-2 text-left"
-        >Title</label
-      > -->
-      <InputText
-        v-model="name"
-        size="large"
-        id="email1"
-        placeholder="Task Name"
-        type="text"
-        :invalid="nameError"
-        class="w-full mb-3"
-      />
+  <form action="">
+    <InputText
+      v-model="name"
+      size="large"
+      id="email1"
+      placeholder="Task Name"
+      type="text"
+      :invalid="nameError"
+      class="w-full mb-3"
+    />
 
-      <!-- <label
+    <InputText
+      v-model="description"
+      size="large"
+      id="description"
+      placeholder="Task Description"
+      type="text"
+      aria-label="description"
+      :invalid="descriptionError"
+      class="w-full mb-3"
+    />
+    <div class="w-full">
+      <!-- Form has edit and create actions -->
+      <div v-if="!editMode" class="flex align-items-center">
+        <Checkbox
+          id="completed"
+          :binary="true"
+          v-model="checked"
+          class="mr-2"
+        ></Checkbox>
+        <label for="completed"> Completed </label>
+      </div>
+      <Button
         v-if="!editMode"
-        for="password1"
-        class="block text-900 font-medium mb-2 text-left"
-        >Description</label
-      > -->
-      <!-- <p v-for="(error, index) of v$.name.$errors" :key="index"></p> -->
-      <InputText
-        v-model="description"
-        size="large"
-        id="description"
-        placeholder="Task Description"
-        type="text"
-        aria-label="description"
-        :invalid="descriptionError"
-        class="w-full mb-3"
+        label="Add +"
+        severiy="success"
+        class="w-full my-4"
+        @click="createTask"
+        type="submit"
       />
-      <div class="w-full">
-        <div v-if="!editMode" class="flex align-items-center">
-          <Checkbox
-            id="completed"
-            :binary="true"
-            v-model="checked"
-            class="mr-2"
-          ></Checkbox>
-          <label for="completed"> Completed </label>
-        </div>
-        <Button
-          v-if="!editMode"
-          label="Add +"
-          severiy="success"
-          class="w-full my-4"
-          @click="createTask"
-          type="submit"
-        />
-        <div v-else>
-          <div class="grid">
-            <div class="col-12 md:col-12 lg:col-6">
-              <Button
-                label="Save"
-                severiy="info"
-                :disabled="!isEditComitted"
-                @click="updateTask"
-                class="w-full"
-                type="submit"
-              />
-            </div>
-            <div class="col-12 md:col-12 lg:col-6">
-              <Button
-                label="Cancel"
-                severity="secondary"
-                raised
-                @click="$emit('cancelEdit')"
-                class="w-full"
-                type="submit"
-              />
-            </div>
+      <div v-else>
+        <div class="grid">
+          <div class="col-12 md:col-12 lg:col-6">
+            <Button
+              label="Save"
+              severiy="info"
+              :disabled="!isEditComitted"
+              @click="updateTask"
+              class="w-full"
+              type="submit"
+            />
+          </div>
+          <div class="col-12 md:col-12 lg:col-6">
+            <Button
+              label="Cancel"
+              severity="secondary"
+              raised
+              @click="$emit('cancelEdit')"
+              class="w-full"
+              type="submit"
+            />
           </div>
         </div>
       </div>
-      <div class="mb-5">
-        <Message v-if="errorMessage" severity="error">{{
-          errorMessage
-        }}</Message>
-      </div>
-    </form>
-  </div>
+    </div>
+    <div class="mb-5">
+      <Message v-if="errorMessage" severity="error">{{ errorMessage }}</Message>
+    </div>
+  </form>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, Ref, computed, reactive, onMounted } from "vue";
+import { defineComponent, ref, computed, reactive, onMounted } from "vue";
 import Checkbox from "primevue/checkbox";
 import InputText from "primevue/inputtext";
 import Message from "primevue/message";
@@ -117,6 +101,17 @@ export default defineComponent({
     const errorMessage = ref("");
     const isTodoExist = ref(false);
     const store = useStore();
+    const checked = ref(false);
+
+    onMounted(() => {
+      // Filling the form in the edit mode
+      if (props.id) {
+        initialData.name = props.text || "";
+        initialData.description = props.subtitle || "";
+        name.value = props.text || "";
+        description.value = props.subtitle || "";
+      }
+    });
 
     const resetValidation = (): void => {
       nameError.value = false;
@@ -129,23 +124,15 @@ export default defineComponent({
       checked.value = false;
     };
 
-    onMounted(() => {
-      if (props.id) {
-        initialData.name = props.text || "";
-        initialData.description = props.subtitle || "";
-        name.value = props.text || "";
-        description.value = props.subtitle || "";
-      }
-    });
     const isEditComitted = computed(
       () =>
         initialData.name !== name.value ||
         initialData.description !== description.value
     );
     const items = computed(() => store.state.items);
-
     const validateinput = (): boolean => {
       resetValidation();
+      //   this here to validate the input from ant special characters
       // eslint-disable-next-line
       const XSSformula = /[&/\\#,+()$~%.^'":*?<>{}]/;
       if (XSSformula.test(name.value)) {
@@ -162,19 +149,6 @@ export default defineComponent({
       return false;
     };
 
-    const checked = ref();
-
-    const updateTask = () => {
-      if (!validateTask()) {
-        return;
-      }
-      store.commit(MutationType.UpdateItem, {
-        id: props?.id || 0,
-        text: name.value,
-        subtitle: description.value,
-      });
-      resetValidation();
-    };
     const validateTask = (): boolean => {
       if (name.value === "") {
         nameError.value = true;
@@ -195,23 +169,39 @@ export default defineComponent({
       return true;
     };
 
-    const createTask = () => {
+    const updateTask = () => {
       if (!validateTask()) {
         return;
       }
-
-      isTodoExist.value = false;
-      const value = name.value && name.value.trim();
-
-      if (!value) {
+      if (!checkForDublicates()) {
         return;
       }
+      store.commit(MutationType.UpdateItem, {
+        id: props?.id || 0,
+        text: name.value,
+        subtitle: description.value,
+      });
+      resetValidation();
+    };
 
+    const checkForDublicates = (): boolean => {
       //  Make sure state doesn't have identical todo's distingushed by task name
+      isTodoExist.value = false;
+      const value = name.value && name.value.trim();
       const isTodoExists = items.value.find((todo) => todo.text === value);
       if (isTodoExists) {
         isTodoExist.value = true;
-        errorMessage.value = "this task already exists";
+        errorMessage.value = "Task with the same name already exists";
+        return false;
+      }
+      return true;
+    };
+
+    const createTask = (): void => {
+      if (!validateTask()) {
+        return;
+      }
+      if (!checkForDublicates()) {
         return;
       }
       const item: TodoItem = {
@@ -240,8 +230,6 @@ export default defineComponent({
     };
   },
   components: {
-    // Card,
-    // InputGroup,
     Message,
     InputText,
     Button,
@@ -250,7 +238,6 @@ export default defineComponent({
 });
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
 .fade-enter-active {
   transition: opacity 0.5s;

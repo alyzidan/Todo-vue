@@ -22,7 +22,6 @@
               ]"
             >
               {{ text }}
-
               <p class="subtitle">{{ subtitle }}</p>
             </div>
           </div>
