@@ -5,6 +5,7 @@ import { store } from "./store";
 import PrimeVue from "primevue/config";
 import Aura from "@primevue/themes/aura";
 import "primeflex/primeflex.css";
+import "primeicons/primeicons.css";
 
 createApp(App)
   .use(store)
@@ -12,6 +13,7 @@ createApp(App)
   .use(PrimeVue, {
     theme: {
       preset: Aura,
+      darkModeSelector: ".my-app-darkest",
     },
   })
   .mount("#app");
