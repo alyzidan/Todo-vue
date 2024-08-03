@@ -1,5 +1,5 @@
 <template>
-  <div class="surface-card p-4 shadow-2 border-round w-full lg:w-7">
+  <div class="surface-card p-4 surface-500 shadow-2 border-round w-full lg:w-7">
     <div class="text-center mb-5">
       <div class="text-center mb-5">
         <div class="text-900 text-3xl font-medium mb-3">ToDo App</div>
@@ -59,6 +59,9 @@ export default defineComponent({
 <style scoped lang="scss">
 .surface-card {
   margin: auto;
+  background: #fff !important;
+  min-height: 100vh;
+  height: auto;
 }
 h3 {
   margin: 40px 0 0;

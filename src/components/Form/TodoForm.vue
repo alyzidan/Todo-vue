@@ -34,7 +34,7 @@
         :invalid="descriptionError"
         class="w-full mb-3"
       />
-      <div class="flex align-items-center justify-content-between">
+      <div class="w-full">
         <div v-if="!editMode" class="flex align-items-center">
           <Checkbox
             id="completed"
@@ -48,14 +48,13 @@
           v-if="!editMode"
           label="Add +"
           severiy="success"
+          class="w-full my-4"
           @click="createTask"
           type="submit"
         />
         <div v-else>
-          <div class="flex flex-wrap gap-1 md:gap-4 xl:gap-8">
-            <div
-              class="border-round w-12rem h-6rem bg-primary font-bold flex align-items-center justify-content-center"
-            >
+          <div class="grid">
+            <div class="col-12 md:col-12 lg:col-6">
               <Button
                 label="Save"
                 severiy="info"
@@ -65,9 +64,7 @@
                 type="submit"
               />
             </div>
-            <div
-              class="border-round w-12rem h-6rem bg-primary font-bold flex align-items-center justify-content-center"
-            >
+            <div class="col-12 md:col-12 lg:col-6">
               <Button
                 label="Cancel"
                 severity="secondary"
