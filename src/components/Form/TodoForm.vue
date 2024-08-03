@@ -1,32 +1,34 @@
 <template>
   <div>
     <form ref="createTaskForm" action="">
-      <label
+      <!-- <label
         v-if="!editMode"
         for="email1"
         class="block text-900 font-medium mb-2 text-left"
         >Title</label
-      >
+      > -->
       <InputText
         v-model="name"
         size="large"
         id="email1"
+        placeholder="Task Name"
         type="text"
         :invalid="nameError"
         class="w-full mb-3"
       />
 
-      <label
+      <!-- <label
         v-if="!editMode"
         for="password1"
         class="block text-900 font-medium mb-2 text-left"
         >Description</label
-      >
+      > -->
       <!-- <p v-for="(error, index) of v$.name.$errors" :key="index"></p> -->
       <InputText
         v-model="description"
         size="large"
         id="description"
+        placeholder="Task Description"
         type="text"
         aria-label="description"
         :invalid="descriptionError"
@@ -58,7 +60,7 @@
                 label="Save"
                 severiy="info"
                 :disabled="!isEditComitted"
-                @click="createTask"
+                @click="updateTask"
                 class="w-full"
                 type="submit"
               />
@@ -104,6 +106,7 @@ export default defineComponent({
     text: { type: String },
     subtitle: { type: String },
     completed: { type: Boolean },
+    editMode: { type: Boolean },
   },
   setup(props) {
     const name = ref("");
@@ -115,19 +118,24 @@ export default defineComponent({
       description: "",
     });
     const errorMessage = ref("");
-    const editMode = ref(false);
     const isTodoExist = ref(false);
     const store = useStore();
+
     const resetValidation = (): void => {
       nameError.value = false;
       descriptionError.value = false;
       errorMessage.value = "";
     };
+    const resetFormData = (): void => {
+      description.value = "";
+      name.value = "";
+      checked.value = false;
+    };
+
     onMounted(() => {
       if (props.id) {
         initialData.name = props.text || "";
         initialData.description = props.subtitle || "";
-        editMode.value = true;
         name.value = props.text || "";
         description.value = props.subtitle || "";
       }
@@ -148,6 +156,7 @@ export default defineComponent({
         errorMessage.value = "Invalid Characters detected";
         return true;
       }
+
       if (XSSformula.test(description.value)) {
         descriptionError.value = true;
         errorMessage.value = "Invalid Characters detected";
@@ -158,43 +167,50 @@ export default defineComponent({
 
     const checked = ref();
 
-    // indicator if the todo exist
-    const todoExists: Ref<string> = computed(() =>
-      isTodoExist.value ? "todo already Exists" : ""
-    );
     const updateTask = () => {
+      if (!validateTask()) {
+        return;
+      }
       store.commit(MutationType.UpdateItem, {
         id: props?.id || 0,
         text: name.value,
         subtitle: description.value,
       });
+      resetValidation();
     };
-    const createTask = async () => {
+    const validateTask = (): boolean => {
       if (name.value === "") {
         nameError.value = true;
         errorMessage.value = "name is Required";
-        return;
+        return false;
       }
 
       if (description.value === "") {
         descriptionError.value = true;
         errorMessage.value = "Description is required";
-        return;
+        return false;
       }
 
       if (validateinput()) {
+        return false;
+      }
+
+      return true;
+    };
+
+    const createTask = () => {
+      if (!validateTask()) {
         return;
       }
 
       isTodoExist.value = false;
-
       const value = name.value && name.value.trim();
 
       if (!value) {
         return;
       }
 
-      //  Make sure state doesn't have identical todo's
+      //  Make sure state doesn't have identical todo's distingushed by task name
       const isTodoExists = items.value.find((todo) => todo.text === value);
       if (isTodoExists) {
         isTodoExist.value = true;
@@ -205,23 +221,17 @@ export default defineComponent({
         id: Date.now(),
         text: name.value,
         subtitle: description.value,
-        completed: checked.value,
+        completed: checked.value || false,
       };
       store.commit(MutationType.CreateItem, item);
-
-      description.value = "";
-      name.value = "";
-      checked.value = false;
       resetValidation();
+      resetFormData();
     };
-    // const validationState = reactive({});
-    // const rules = {};
-    // const v$ = useVuelidate(rules, validationState, { $lazy: true });
-    // return { validationState, v$, filllll, checked };
+
     return {
       name,
       description,
-      editMode,
+      updateTask,
       checked,
       createTask,
       validateinput,
@@ -245,18 +255,12 @@ export default defineComponent({
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
-h3 {
-  margin: 40px 0 0;
+.fade-enter-active {
+  transition: opacity 0.5s;
 }
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
+
+.fade-enter,
+.fade-leave-active {
+  opacity: 0;
 }
 </style>

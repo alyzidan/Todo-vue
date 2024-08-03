@@ -9,24 +9,24 @@
             <div v-if="editMode">
               <TodoForm
                 @cancelEdit="toggleEdit"
+                :editMode="editMode"
                 :key="item"
                 v-bind="item"
               ></TodoForm>
             </div>
-
             <div
-              v-else
+              v-if="!editMode"
               :class="[
                 { 'line-through': completed },
                 'font-medium text-left text-3xl text-900',
               ]"
             >
               {{ text }}
-            </div>
-            <div class="flex align-items-center text-700 flex-wrap">
-              <div class="mr-5 flex align-items-center mt-3">
-                <!-- <i class="pi pi-users mr-2"></i> -->
-                <span>{{ subtitle }}</span>
+              <div class="flex align-items-center text-700 flex-wrap">
+                <div class="mr-5 flex align-items-center mt-3">
+                  <!-- <i class="pi pi-users mr-2"></i> -->
+                  <span>{{ subtitle }}</span>
+                </div>
               </div>
             </div>
           </div>
@@ -139,4 +139,13 @@ export default defineComponent({
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+.fade-enter-active {
+  transition: opacity 0.5s;
+}
+
+.fade-enter,
+.fade-leave-active {
+  opacity: 0;
+}
+</style>
