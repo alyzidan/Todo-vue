@@ -8,7 +8,7 @@
           <div>
             <div v-if="editMode">
               <TodoForm
-                @cancelEdit="toggleEdit"
+                @toggleEditMode="toggleEdit"
                 :editMode="editMode"
                 :key="item"
                 v-bind="item"

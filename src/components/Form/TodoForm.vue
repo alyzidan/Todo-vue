@@ -56,7 +56,7 @@
               label="Cancel"
               severity="secondary"
               raised
-              @click="$emit('cancelEdit')"
+              @click="$emit('toggleEditMode')"
               class="w-full"
               type="submit"
             />
@@ -89,7 +89,7 @@ export default defineComponent({
     completed: { type: Boolean },
     editMode: { type: Boolean },
   },
-  setup(props) {
+  setup(props, context) {
     const name = ref("");
     const description = ref("");
     const nameError = ref(false);
@@ -182,6 +182,7 @@ export default defineComponent({
         subtitle: description.value,
       });
       resetValidation();
+      context.emit("toggleEditMode");
     };
 
     const checkForDublicates = (): boolean => {
