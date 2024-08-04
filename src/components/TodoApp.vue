@@ -4,8 +4,8 @@
   >
     <div class="text-900 text-3xl font-medium mb-5">Todo App</div>
     <TodoForm></TodoForm>
-
     <DragList></DragList>
+
     <div class="text-center my-5" v-if="items.length < 1">
       <p>You don't have any todos yet</p>
       <p>Start add by filling the form above</p>
