@@ -1,74 +1,69 @@
 <template>
-  <div class="mb-5">
-    <div class="surface-card shadow-2 p-1">
-      <div class="surface-section px-1 py-3 md:px-2 border-round">
+  <div
+    class="surface-card mb-5 shadow-2 p-1 surface-section px-1 py-3 md:px-2 border-round"
+  >
+    <div
+      class="flex align-items-start flex-column lg:justify-content-between lg:flex-row"
+    >
+      <div class="mt-3 col-12 lg:col-6 lg:mt-0 drag-cluster">
+        <div v-if="editMode">
+          <TodoForm
+            @toggleEditMode="toggleEdit"
+            :editMode="editMode"
+            :key="item"
+            v-bind="item"
+          ></TodoForm>
+        </div>
         <div
-          class="flex align-items-start flex-column lg:justify-content-between lg:flex-row"
+          v-if="!editMode"
+          :class="[
+            { 'line-through': completed },
+            'font-medium text-left text-3xl text-900',
+          ]"
         >
-          <div class="mt-3 col-12 lg:col-6 lg:mt-0 drag-cluster">
-            <div v-if="editMode">
-              <TodoForm
-                @toggleEditMode="toggleEdit"
-                :editMode="editMode"
-                :key="item"
-                v-bind="item"
-              ></TodoForm>
-            </div>
-            <div
-              v-if="!editMode"
-              :class="[
-                { 'line-through': completed },
-                'font-medium text-left text-3xl text-900',
-              ]"
-            >
-              {{ text }}
-              <p class="subtitle">{{ subtitle }}</p>
-            </div>
+          {{ text }}
+          <p class="subtitle">{{ subtitle }}</p>
+        </div>
+      </div>
+      <div class="mt-3 col-12 lg:col-6 lg:mt-0">
+        <div class="grid undraggable">
+          <div class="col-12 md:col-12 lg:col-4">
+            <Button
+              label="Edit"
+              raised
+              class="p-button-outlined w-full"
+              icon="pi pi-file-edit"
+              @click="toggleEdit"
+            ></Button>
           </div>
-
-          <div class="mt-3 col-12 lg:col-6 lg:mt-0">
-            <div class="grid undraggable">
-              <div class="col-12 md:col-12 lg:col-4">
-                <Button
-                  label="Edit"
-                  raised
-                  class="p-button-outlined w-full"
-                  icon="pi pi-file-edit"
-                  @click="toggleEdit"
-                ></Button>
-              </div>
-              <div class="col-12 md:col-12 lg:col-4">
-                <Button
-                  v-if="completed"
-                  raised
-                  label="In Progress"
-                  icon="pi pi-spinner"
-                  @click="toggleCompletion()"
-                  class="p-button-outlined w-full"
-                ></Button>
-                <Button
-                  v-else
-                  raised
-                  label="Done"
-                  icon="pi pi-check"
-                  @click="toggleCompletion()"
-                  class="mr-2 w-full"
-                  severity="primary"
-                ></Button>
-              </div>
-              <div class="col-12 md:col-12 lg:col-4">
-                <Button
-                  raised
-                  icon="pi pi-times-circle"
-                  @click="removeTask()"
-                  label="Remove"
-                  class="mr-2 w-full"
-                  severity="danger"
-                />
-              </div>
-            </div>
-
-            <!-- <Button label="Save" ></Button> -->
+          <div class="col-12 md:col-12 lg:col-4">
+            <Button
+              v-if="completed"
+              raised
+              label="In Progress"
+              icon="pi pi-spinner"
+              @click="toggleCompletion()"
+              class="p-button-outlined w-full"
+            ></Button>
+            <Button
+              v-else
+              raised
+              label="Done"
+              icon="pi pi-check"
+              @click="toggleCompletion()"
+              class="mr-2 w-full"
+              severity="primary"
+            ></Button>
+          </div>
+          <div class="col-12 md:col-12 lg:col-4">
+            <Button
+              raised
+              icon="pi pi-times-circle"
+              @click="removeTask()"
+              label="Remove"
+              class="mr-2 w-full"
+              severity="danger"
+            />
           </div>
         </div>
       </div>
@@ -98,26 +93,20 @@ export default defineComponent({
   setup(props) {
     const store = useStore();
     const editMode = ref(false);
-
     const item = computed(() =>
       store.state.items.find((item) => item.id == props.id)
     );
 
-    const controls = ref([
-      { name: "In Progress", code: "IP" },
-      { name: "Done", code: "DN" },
-    ]);
-
-    const toggleEdit = () => {
+    const toggleEdit = (): void => {
       editMode.value = !editMode.value;
       console.log(editMode.value);
     };
-    const removeTask = () => {
+    const removeTask = (): void => {
       store.commit(MutationType.RemoveItem, {
         id: props.id,
       });
     };
-    const toggleCompletion = () => {
+    const toggleCompletion = (): void => {
       store.commit(MutationType.UpdateItem, {
         id: props.id,
         completed: !props.completed,
@@ -127,7 +116,6 @@ export default defineComponent({
     return {
       toggleCompletion,
       removeTask,
-      controls,
       item,
       editMode,
       toggleEdit,
@@ -135,17 +123,7 @@ export default defineComponent({
   },
 });
 </script>
-
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
-.fade-enter-active {
-  transition: opacity 0.5s;
-}
-
-.fade-enter,
-.fade-leave-active {
-  opacity: 0;
-}
 .subtitle {
   font-size: 15px;
 }

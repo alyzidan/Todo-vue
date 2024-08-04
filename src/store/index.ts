@@ -11,7 +11,7 @@ import { Mutations, mutations } from "./mutations";
 import { Actions, actions } from "./actions";
 import { Getters, getters } from "./getters";
 
-// initial state Object
+// initial state data Object
 export const state: State = {
   loading: false,
   items: [],

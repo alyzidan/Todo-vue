@@ -1,5 +1,5 @@
 <template>
-  <form action="">
+  <form>
     <InputText
       v-model="name"
       size="large"
@@ -9,7 +9,6 @@
       :invalid="nameError"
       class="w-full mb-3"
     />
-
     <InputText
       v-model="description"
       size="large"
@@ -21,7 +20,6 @@
       class="w-full mb-3"
     />
     <div class="w-full">
-      <!-- Form has edit and create actions -->
       <div v-if="!editMode" class="flex align-items-center">
         <Checkbox
           id="completed"
@@ -33,8 +31,10 @@
       </div>
       <Button
         v-if="!editMode"
-        label="Add +"
+        label="Add"
         severiy="success"
+        raised
+        icon="pi pi-plus"
         class="w-full my-4"
         @click="createTask"
         type="submit"
@@ -44,6 +44,7 @@
           <div class="col-12 md:col-12 lg:col-6">
             <Button
               label="Save"
+              raised
               severiy="info"
               :disabled="!isEditComitted"
               @click="updateTask"
@@ -102,6 +103,7 @@ export default defineComponent({
     const isTodoExist = ref(false);
     const store = useStore();
     const checked = ref(false);
+    const items = computed(() => store.state.items);
 
     onMounted(() => {
       // Filling the form in the edit mode
@@ -129,7 +131,6 @@ export default defineComponent({
         initialData.name !== name.value ||
         initialData.description !== description.value
     );
-    const items = computed(() => store.state.items);
     const validateinput = (): boolean => {
       resetValidation();
       //   this here to validate the input from ant special characters
@@ -148,11 +149,12 @@ export default defineComponent({
       }
       return false;
     };
-
+    // Making two method incase we need to add different validation rules
+    // Or different error messages for each input without fuss
     const validateTask = (): boolean => {
       if (name.value === "") {
         nameError.value = true;
-        errorMessage.value = "name is Required";
+        errorMessage.value = "Name is required";
         return false;
       }
 
@@ -173,9 +175,7 @@ export default defineComponent({
       if (!validateTask()) {
         return;
       }
-      if (!checkForDublicates()) {
-        return;
-      }
+
       store.commit(MutationType.UpdateItem, {
         id: props?.id || 0,
         text: name.value,
@@ -238,14 +238,3 @@ export default defineComponent({
   },
 });
 </script>
-
-<style scoped lang="scss">
-.fade-enter-active {
-  transition: opacity 0.5s;
-}
-
-.fade-enter,
-.fade-leave-active {
-  opacity: 0;
-}
-</style>

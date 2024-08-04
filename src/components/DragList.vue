@@ -4,6 +4,7 @@
       v-bind="options"
       handle=".drag-cluster:not(button)"
       :list="items"
+      itemKey="items"
     >
       <template #item="{ element }">
         <TodoItem :key="element.id" v-bind="element"> </TodoItem>

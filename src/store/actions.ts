@@ -18,22 +18,10 @@ export type Actions = {
 };
 
 // Memic Api call
-const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+// const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 export const actions: ActionTree<State, State> & Actions = {
   async [ActionTypes.GetTodoItems]({ commit }) {
-    commit(MutationType.SetLoading, true);
-
-    await sleep(1000);
-
-    commit(MutationType.SetLoading, false);
-    commit(MutationType.SetItems, [
-      {
-        id: 1,
-        text: "VUEX",
-        subtitle: "asd",
-        completed: false,
-      },
-    ]);
+    commit(MutationType.SetItems, []);
   },
 };
