@@ -40,7 +40,7 @@
             <Button
               v-if="completed"
               raised
-              label="In Progress"
+              label="Todo"
               icon="pi pi-spinner"
               @click="toggleCompletion()"
               class="p-button-outlined w-full"
