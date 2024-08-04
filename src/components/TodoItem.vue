@@ -5,7 +5,7 @@
         <div
           class="flex align-items-start flex-column lg:justify-content-between lg:flex-row"
         >
-          <div>
+          <div class="mt-3 col-12 lg:col-6 lg:mt-0 drag-cluster">
             <div v-if="editMode">
               <TodoForm
                 @toggleEditMode="toggleEdit"
@@ -27,7 +27,7 @@
           </div>
 
           <div class="mt-3 col-12 lg:col-6 lg:mt-0">
-            <div class="grid">
+            <div class="grid undraggable">
               <div class="col-12 md:col-12 lg:col-4">
                 <Button
                   label="Edit"

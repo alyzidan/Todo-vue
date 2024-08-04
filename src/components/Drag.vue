@@ -1,10 +1,12 @@
 <template>
   <div>
-    <draggable v-bind="options" :list="items">
+    <draggable
+      v-bind="options"
+      handle=".drag-cluster:not(button)"
+      :list="items"
+    >
       <template #item="{ element }">
-        <TodoItem :key="element.id" v-bind="element">
-          <h1>{{ element.text }}</h1>
-        </TodoItem>
+        <TodoItem :key="element.id" v-bind="element"> </TodoItem>
       </template>
     </draggable>
   </div>
